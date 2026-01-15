@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1e3a5f">
+    <title>JORI PAPEL - Orçamentos</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧻</text></svg>">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: linear-gradient(135deg, #1e3a5f 0%, #2e5c8a 100%);
+            min-height: 100vh; 
+            min-height: -webkit-fill-available;
+            padding: 12px;
+        }
+        html { height: -webkit-fill-available; }
+        .container { max-width: 500px; margin: 0 auto; }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.5em; margin-bottom: 3px; }
+        .header p { color: #7eb8e7; font-size: 0.85em; }
+        
+        .main {
+            background: white;
+            padding: 15px;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #e0e0e0;
+        }
+        .section.config { background: #fce4ec; border-color: #f8bbd9; }
+        .section.vendedor { background: #e8f4f8; }
+        .section.cliente { background: #e3f2fd; }
+        .section.produtos { background: #e8f5e9; }
+        .section.condicoes { background: #fff8e1; }
+        
+        .section-title {
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 1em;
+        }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .grid.full { grid-template-columns: 1fr; }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            -webkit-appearance: none;
+        }
+        input:focus, select:focus, textarea:focus { 
+            border-color: #2e5c8a; 
+            outline: none; 
+        }
+        
+        label { display: block; font-size: 0.75em; color: #666; margin-bottom: 3px; }
+        
+        .btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-add { background: #4caf50; color: white; width: auto; }
+        .btn-gerar { background: #d32f2f; color: white; font-size: 1.1em; padding: 15px; }
+        .btn-disabled { background: #ccc !important; cursor: not-allowed; }
+        
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            background: white;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .upload-area img { max-height: 60px; margin-top: 8px; border-radius: 5px; }
+        .upload-area input { display: none; }
+        .upload-area p { color: #666; font-size: 0.8em; }
+        .upload-area.has-image { border-style: solid; border-color: #4caf50; }
+        
+        .catalogo-modal {
+            display: none;
+            background: white;
+            border: 2px solid #4caf50;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .catalogo-modal.show { display: block; }
+        
+        .produto-lista { max-height: 250px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        
+        .produto-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            background: white;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .produto-item:active { background: #e8f5e9; }
+        .produto-info h4 { font-size: 0.85em; color: #333; }
+        .produto-info p { font-size: 0.7em; color: #666; }
+        .produto-preco { font-weight: 700; color: #2e7d32; font-size: 0.9em; }
+        
+        .item-orcamento {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 8px;
+        }
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        .item-header h4 { font-size: 0.85em; color: #333; }
+        .item-header p { font-size: 0.75em; color: #888; }
+        .btn-remover {
+            background: #ff5252;
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .item-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .item-controls .field { flex: 1; }
+        .item-controls input { padding: 8px; text-align: center; }
+        .item-total { font-size: 1em; font-weight: 700; color: #2e7d32; min-width: 90px; text-align: right; }
+        
+        .total-box {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2e5c8a 100%);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .total-box .valor { font-size: 1.4em; font-weight: 700; }
+        
+        .empty-state { text-align: center; padding: 25px; color: #999; }
+        .empty-state .icon { font-size: 2em; margin-bottom: 5px; }
+        
+        .badge {
+            display: inline-block;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.65em;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+        .badge-cx { background: #e3f2fd; color: #1565c0; }
+        .badge-un { background: #fce4ec; color: #c2185b; }
+
+        .footer { text-align: center; padding: 12px; color: rgba(255,255,255,0.7); font-size: 0.8em; }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 9999;
+            padding: 15px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .modal-overlay.show { display: block; }
+        
+        .modal-content {
+            max-width: 500px;
+            margin: 0 auto;
+            padding-bottom: 30px;
+        }
+        
+        .modal-success {
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .modal-success h2 { font-size: 1.2em; margin-bottom: 3px; }
+        .modal-success p { font-size: 0.85em; opacity: 0.9; }
+        
+        .btn-compartilhar {
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            color: white;
+            padding: 16px;
+            font-size: 1.1em;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .btn-salvar {
+            background: #2196f3;
+            color: white;
+            padding: 14px;
+            font-size: 1em;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .btn-fechar {
+            background: #666;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .modal-image-container {
+            background: white;
+            border-radius: 12px;
+            padding: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .modal-image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-overlay.show { display: flex; }
+        .loading-box {
+            background: white;
+            padding: 25px 40px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .spinner {
+            width: 35px; height: 35px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1e3a5f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .config-toggle {
+            background: #e91e63;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+        }
+
+        /* iOS safe area */
+        @supports (padding: max(0px)) {
+            body { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loading">
+        <div class="loading-box">
+            <div class="spinner"></div>
+            <p>Gerando...</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalImagem">
+        <div class="modal-content">
+            <div class="modal-success">
+                <h2>✅ Orçamento Pronto!</h2>
+                <p>Escolha como enviar</p>
+            </div>
+            
+            <button class="btn btn-compartilhar" id="btnCompartilhar">
+                📤 COMPARTILHAR (WhatsApp, Email...)
+            </button>
+            
+            <button class="btn btn-salvar" id="btnSalvar">
+                💾 Salvar Imagem
+            </button>
+            
+            <div class="modal-image-container">
+                <img id="imagemGerada" src="" alt="Orçamento">
+            </div>
+            
+            <button class="btn btn-fechar" id="btnFechar">✕ Fechar</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🧻 JORI PAPEL</h1>
+            <p>Distribuidor Oficial Santher RJ - 40 Anos</p>
+        </div>
+
+        <div class="main">
+            <button class="config-toggle" id="btnConfig">⚙️ Configurar Imagens</button>
+
+            <div class="section config" id="sectionConfig" style="display: none;">
+                <div class="section-title">🖼️ Imagens do Orçamento</div>
+                <div class="grid">
+                    <div>
+                        <label>Logo</label>
+                        <div class="upload-area" id="areaLogo">
+                            <p>📷 Carregar logo</p>
+                            <input type="file" id="inputLogo" accept="image/*">
+                            <img id="previewLogo" src="" style="display: none;">
+                        </div>
+                    </div>
+                    <div>
+                        <label>Banner</label>
+                        <div class="upload-area" id="areaBanner">
+                            <p>📷 Carregar banner</p>
+                            <input type="file" id="inputBanner" accept="image/*">
+                            <img id="previewBanner" src="" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn" style="background: #666; color: white; margin-top: 8px; font-size: 0.85em;" id="btnLimparImg">🗑️ Limpar</button>
+            </div>
+
+            <div class="section vendedor">
+                <div class="section-title">👤 Vendedor</div>
+                <div class="grid">
+                    <div>
+                        <label>Nome</label>
+                        <input type="text" id="vendedorNome" placeholder="Seu nome">
+                    </div>
+                    <div>
+                        <label>Telefone</label>
+                        <input type="tel" id="vendedorTel" placeholder="(21) 99999-9999">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section cliente">
+                <div class="section-title">🏢 Cliente</div>
+                <div class="grid">
+                    <div>
+                        <label>Empresa</label>
+                        <input type="text" id="clienteEmpresa" placeholder="Nome da Empresa">
+                    </div>
+                    <div>
+                        <label>Contato</label>
+                        <input type="text" id="clienteNome" placeholder="Nome do Contato">
+                    </div>
+                    <div>
+                        <label>WhatsApp</label>
+                        <input type="tel" id="clienteTel" placeholder="(21) 99999-9999">
+                    </div>
+                    <div>
+                        <label>E-mail</label>
+                        <input type="email" id="clienteEmail" placeholder="email@empresa.com">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section produtos">
+                <div class="section-title" style="justify-content: space-between;">
+                    <span>📦 Produtos</span>
+                    <button class="btn btn-add" id="btnAddProduto">+ Adicionar</button>
+                </div>
+
+                <div id="catalogoModal" class="catalogo-modal">
+                    <input type="text" id="buscaProduto" placeholder="🔍 Buscar..." style="margin-bottom: 8px;">
+                    <div class="produto-lista" id="listaProdutos"></div>
+                </div>
+
+                <div id="itensContainer">
+                    <div class="empty-state">
+                        <div class="icon">📋</div>
+                        <p>Nenhum produto</p>
+                    </div>
+                </div>
+
+                <div class="total-box" id="totalBox" style="display: none;">
+                    <span>TOTAL</span>
+                    <span class="valor" id="totalValor">R$ 0,00</span>
+                </div>
+            </div>
+
+            <div class="section condicoes">
+                <div class="section-title">⚙️ Condições</div>
+                <div class="grid">
+                    <div>
+                        <label>Pagamento</label>
+                        <select id="condicaoPagamento">
+                            <option>À vista</option>
+                            <option>7 dias</option>
+                            <option>14 dias</option>
+                            <option>21 dias</option>
+                            <option>28 dias</option>
+                            <option>30/60 dias</option>
+                            <option>30/60/90 dias</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Validade (dias)</label>
+                        <input type="number" id="validade" value="7" min="1">
+                    </div>
+                </div>
+                <div class="grid full" style="margin-top: 8px;">
+                    <div>
+                        <label>Observações</label>
+                        <textarea id="observacoes" rows="2" placeholder="Observações..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-gerar btn-disabled" id="btnGerar">
+                📄 GERAR ORÇAMENTO
+            </button>
+        </div>
+
+        <div class="footer">
+            <p>Jori Papel - 40 Anos</p>
+        </div>
+    </div>
+
+    <canvas id="canvasOrcamento" style="display: none;"></canvas>
+
+    <script>
+        const CATALOGO = [
+            { id: 1, codigo: 'PHI12', nome: 'Papel Hig. KAIKAI 20x600 PHI12', tipo: 'CX', unidade: 'Fardo 20 rolos', preco: 169.90 },
+            { id: 2, codigo: 'PHI12-UN', nome: 'Papel Hig. KAIKAI PHI12', tipo: 'UN', unidade: 'Rolo', preco: 8.50 },
+            { id: 3, codigo: 'EHR50', nome: 'Papel Hig. Rolão 8x500 EHR50', tipo: 'CX', unidade: 'Fardo 8 rolos', preco: 125.50 },
+            { id: 4, codigo: 'EHR50-UN', nome: 'Papel Hig. Rolão EHR50', tipo: 'UN', unidade: 'Rolo 500m', preco: 15.69 },
+            { id: 5, codigo: 'PHR25', nome: 'Papel Hig. Rolão 08x250 PHR-25', tipo: 'CX', unidade: 'Fardo 8 rolos', preco: 101.90 },
+            { id: 6, codigo: 'PHR25-UN', nome: 'Papel Hig. Rolão PHR-25', tipo: 'UN', unidade: 'Rolo 250m', preco: 12.74 },
+            { id: 7, codigo: 'SECP06800', nome: 'Sabonete Foam Luna Espuma', tipo: 'CX', unidade: 'Caixa 6 refis', preco: 129.90 },
+            { id: 8, codigo: 'SECP06800-UN', nome: 'Sabonete Foam Luna Espuma', tipo: 'UN', unidade: 'Refil 800ml', preco: 21.65 },
+            { id: 9, codigo: 'SECQ06', nome: 'Sabonete Quartz Luna Espuma', tipo: 'CX', unidade: 'Caixa 6 refis', preco: 229.90 },
+            { id: 10, codigo: 'SECQ06-UN', nome: 'Sabonete Quartz Luna Espuma', tipo: 'UN', unidade: 'Refil 800ml', preco: 38.32 },
+            { id: 11, codigo: 'ETI00', nome: 'Toalha ECO 3D 06x400 ETI-00', tipo: 'CX', unidade: 'Caixa 2400 fls', preco: 86.50 },
+            { id: 12, codigo: 'ETI00-UN', nome: 'Toalha ECO ETI-00', tipo: 'UN', unidade: 'Pct 400 fls', preco: 14.42 },
+            { id: 13, codigo: 'ITI01', nome: 'Toalha ITI01 FS 10x240', tipo: 'CX', unidade: 'Caixa 2400 fls', preco: 108.90 },
+            { id: 14, codigo: 'ITI01-UN', nome: 'Toalha ITI01 FS', tipo: 'UN', unidade: 'Pct 240 fls', preco: 10.89 },
+            { id: 15, codigo: 'ITI02', nome: 'Toalha ITI02 FD 10x240', tipo: 'CX', unidade: 'Caixa 2400 fls', preco: 132.50 },
+            { id: 16, codigo: 'ITI02-UN', nome: 'Toalha ITI02 FD', tipo: 'UN', unidade: 'Pct 240 fls', preco: 13.25 },
+            { id: 17, codigo: 'ITI03', nome: 'Toalha ITI03 F Tripla 12x200', tipo: 'CX', unidade: 'Caixa 2400 fls', preco: 154.50 },
+            { id: 18, codigo: 'ITI03-UN', nome: 'Toalha ITI03 F Tripla', tipo: 'UN', unidade: 'Pct 200 fls', preco: 12.88 },
+            { id: 19, codigo: 'ETB20', nome: 'Bobina 8x250mts ETB20', tipo: 'CX', unidade: 'Fardo 8 bob', preco: 269.00 },
+            { id: 20, codigo: 'ETB20-UN', nome: 'Bobina ETB20 250m', tipo: 'UN', unidade: 'Bobina 250m', preco: 33.63 },
+        ];
+
+        let itens = [];
+        let contadorId = 0;
+        let imagemDataUrl = '';
+        let logoBase64 = '';
+        let bannerBase64 = '';
+
+        // Event Listeners
+        document.getElementById('btnConfig').addEventListener('click', () => {
+            const sec = document.getElementById('sectionConfig');
+            sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+        });
+
+        document.getElementById('areaLogo').addEventListener('click', () => {
+            document.getElementById('inputLogo').click();
+        });
+
+        document.getElementById('areaBanner').addEventListener('click', () => {
+            document.getElementById('inputBanner').click();
+        });
+
+        document.getElementById('inputLogo').addEventListener('change', function() {
+            carregarImagem('logo', this);
+        });
+
+        document.getElementById('inputBanner').addEventListener('change', function() {
+            carregarImagem('banner', this);
+        });
+
+        document.getElementById('btnLimparImg').addEventListener('click', limparImagens);
+        document.getElementById('btnAddProduto').addEventListener('click', toggleCatalogo);
+        document.getElementById('buscaProduto').addEventListener('input', function() {
+            renderizarCatalogo(this.value);
+        });
+        document.getElementById('btnGerar').addEventListener('click', gerarOrcamento);
+        document.getElementById('btnCompartilhar').addEventListener('click', compartilharImagem);
+        document.getElementById('btnSalvar').addEventListener('click', salvarImagem);
+        document.getElementById('btnFechar').addEventListener('click', fecharModal);
+
+        function carregarImagensSalvas() {
+            try {
+                logoBase64 = localStorage.getItem('joriLogo') || '';
+                bannerBase64 = localStorage.getItem('joriBanner') || '';
+                
+                if (logoBase64) {
+                    document.getElementById('previewLogo').src = logoBase64;
+                    document.getElementById('previewLogo').style.display = 'block';
+                    document.getElementById('areaLogo').classList.add('has-image');
+                    document.getElementById('areaLogo').querySelector('p').textContent = '✅ OK';
+                }
+                if (bannerBase64) {
+                    document.getElementById('previewBanner').src = bannerBase64;
+                    document.getElementById('previewBanner').style.display = 'block';
+                    document.getElementById('areaBanner').classList.add('has-image');
+                    document.getElementById('areaBanner').querySelector('p').textContent = '✅ OK';
+                }
+            } catch(e) {
+                console.log('LocalStorage não disponível');
+            }
+        }
+
+        function carregarImagem(tipo, input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64 = e.target.result;
+                
+                try {
+                    if (tipo === 'logo') {
+                        logoBase64 = base64;
+                        localStorage.setItem('joriLogo', base64);
+                        document.getElementById('previewLogo').src = base64;
+                        document.getElementById('previewLogo').style.display = 'block';
+                        document.getElementById('areaLogo').classList.add('has-image');
+                        document.getElementById('areaLogo').querySelector('p').textContent = '✅ OK';
+                    } else {
+                        bannerBase64 = base64;
+                        localStorage.setItem('joriBanner', base64);
+                        document.getElementById('previewBanner').src = base64;
+                        document.getElementById('previewBanner').style.display = 'block';
+                        document.getElementById('areaBanner').classList.add('has-image');
+                        document.getElementById('areaBanner').querySelector('p').textContent = '✅ OK';
+                    }
+                } catch(e) {
+                    if (tipo === 'logo') logoBase64 = base64;
+                    else bannerBase64 = base64;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function limparImagens() {
+            try {
+                localStorage.removeItem('joriLogo');
+                localStorage.removeItem('joriBanner');
+            } catch(e) {}
+            logoBase64 = '';
+            bannerBase64 = '';
+            document.getElementById('previewLogo').style.display = 'none';
+            document.getElementById('previewBanner').style.display = 'none';
+            document.getElementById('areaLogo').classList.remove('has-image');
+            document.getElementById('areaBanner').classList.remove('has-image');
+            document.getElementById('areaLogo').querySelector('p').textContent = '📷 Carregar logo';
+            document.getElementById('areaBanner').querySelector('p').textContent = '📷 Carregar banner';
+        }
+
+        function formatarMoeda(v) { 
+            return 'R$ ' + v.toFixed(2).replace('.', ','); 
+        }
+
+        function toggleCatalogo() {
+            document.getElementById('catalogoModal').classList.toggle('show');
+        }
+
+        function renderizarCatalogo(filtro = '') {
+            const lista = document.getElementById('listaProdutos');
+            const f = filtro.toLowerCase();
+            const prods = CATALOGO.filter(p => p.nome.toLowerCase().includes(f) || p.codigo.toLowerCase().includes(f));
+            lista.innerHTML = prods.map(p => `
+                <div class="produto-item" data-id="${p.id}">
+                    <div class="produto-info">
+                        <h4>${p.nome} <span class="badge ${p.tipo === 'CX' ? 'badge-cx' : 'badge-un'}">${p.tipo}</span></h4>
+                        <p>${p.codigo} | ${p.unidade}</p>
+                    </div>
+                    <div class="produto-preco">${formatarMoeda(p.preco)}</div>
+                </div>
+            `).join('');
+
+            lista.querySelectorAll('.produto-item').forEach(el => {
+                el.addEventListener('click', () => adicionarProduto(parseInt(el.dataset.id)));
+            });
+        }
+
+        function adicionarProduto(id) {
+            const p = CATALOGO.find(x => x.id === id);
+            contadorId++;
+            itens.push({ itemId: contadorId, ...p, quantidade: 1, precoUnit: p.preco });
+            toggleCatalogo();
+            document.getElementById('buscaProduto').value = '';
+            renderizarCatalogo();
+            renderizarItens();
+        }
+
+        function removerItem(id) {
+            itens = itens.filter(i => i.itemId !== id);
+            renderizarItens();
+        }
+
+        function atualizarItem(id, campo, valor) {
+            const item = itens.find(i => i.itemId === id);
+            if (item) {
+                item[campo] = campo === 'quantidade' ? Math.max(1, parseInt(valor) || 1) : Math.max(0, parseFloat(valor) || 0);
+                renderizarItens();
+            }
+        }
+
+        function calcularTotal() { 
+            return itens.reduce((a, i) => a + i.quantidade * i.precoUnit, 0); 
+        }
+
+        function renderizarItens() {
+            const container = document.getElementById('itensContainer');
+            const totalBox = document.getElementById('totalBox');
+            const btn = document.getElementById('btnGerar');
+
+            if (itens.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>Nenhum produto</p></div>';
+                totalBox.style.display = 'none';
+                btn.classList.add('btn-disabled');
+                return;
+            }
+
+            container.innerHTML = itens.map(i => `
+                <div class="item-orcamento">
+                    <div class="item-header">
+                        <div>
+                            <h4>${i.nome} <span class="badge ${i.tipo === 'CX' ? 'badge-cx' : 'badge-un'}">${i.tipo}</span></h4>
+                            <p>${i.codigo} | ${i.unidade}</p>
+                        </div>
+                        <button class="btn-remover" data-id="${i.itemId}">×</button>
+                    </div>
+                    <div class="item-controls">
+                        <div class="field">
+                            <label>Qtd</label>
+                            <input type="number" min="1" value="${i.quantidade}" data-id="${i.itemId}" data-campo="quantidade">
+                        </div>
+                        <div class="field">
+                            <label>Preço</label>
+                            <input type="number" step="0.01" value="${i.precoUnit.toFixed(2)}" data-id="${i.itemId}" data-campo="precoUnit">
+                        </div>
+                        <div class="item-total">${formatarMoeda(i.quantidade * i.precoUnit)}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.querySelectorAll('.btn-remover').forEach(btn => {
+                btn.addEventListener('click', () => removerItem(parseInt(btn.dataset.id)));
+            });
+
+            container.querySelectorAll('input[data-id]').forEach(inp => {
+                inp.addEventListener('change', () => {
+                    atualizarItem(parseInt(inp.dataset.id), inp.dataset.campo, inp.value);
+                });
+            });
+
+            totalBox.style.display = 'flex';
+            document.getElementById('totalValor').textContent = formatarMoeda(calcularTotal());
+            btn.classList.remove('btn-disabled');
+        }
+
+        function gerarOrcamento() {
+            if (itens.length === 0) {
+                alert('Adicione produtos!');
+                return;
+            }
+
+            document.getElementById('loading').classList.add('show');
+
+            setTimeout(() => {
+                try {
+                    const canvas = document.getElementById('canvasOrcamento');
+                    const ctx = canvas.getContext('2d');
+                    
+                    const W = 600;
+                    const itemH = 26;
+                    const H = 380 + (itens.length * itemH);
+                    
+                    canvas.width = W;
+                    canvas.height = H;
+
+                    const clienteEmpresa = document.getElementById('clienteEmpresa').value || '-';
+                    const clienteNome = document.getElementById('clienteNome').value || '-';
+                    const clienteTel = document.getElementById('clienteTel').value || '-';
+                    const clienteEmail = document.getElementById('clienteEmail').value || '-';
+                    const vendedorNome = document.getElementById('vendedorNome').value || '-';
+                    const vendedorTel = document.getElementById('vendedorTel').value || '-';
+                    const condicao = document.getElementById('condicaoPagamento').value;
+                    const validade = document.getElementById('validade').value;
+                    const obs = document.getElementById('observacoes').value;
+                    
+                    const dataAtual = new Date().toLocaleDateString('pt-BR');
+                    const dataVal = new Date();
+                    dataVal.setDate(dataVal.getDate() + parseInt(validade));
+                    const numOrc = Date.now().toString().slice(-6);
+
+                    let y = 0;
+
+                    // Fundo
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, W, H);
+
+                    // Header
+                    ctx.fillStyle = '#1e3a5f';
+                    ctx.font = 'bold 20px Arial';
+                    ctx.fillText('JORI PAPEL', 20, 30);
+                    ctx.font = '10px Arial';
+                    ctx.fillStyle = '#666';
+                    ctx.fillText('40 Anos - Distribuidor Santher RJ', 20, 45);
+
+                    ctx.fillStyle = '#1e3a5f';
+                    ctx.font = 'bold 12px Arial';
+                    ctx.textAlign = 'right';
+                    ctx.fillText('Nº ' + numOrc, W - 20, 25);
+                    ctx.font = '10px Arial';
+                    ctx.fillStyle = '#333';
+                    ctx.fillText('Data: ' + dataAtual, W - 20, 40);
+                    ctx.fillText('Validade: ' + dataVal.toLocaleDateString('pt-BR'), W - 20, 53);
+                    ctx.textAlign = 'left';
+
+                    ctx.fillStyle = '#1e3a5f';
+                    ctx.fillRect(0, 60, W, 3);
+                    y = 63;
+
+                    // Título
+                    ctx.fillStyle = '#1e3a5f';
+                    ctx.fillRect(0, y, W, 30);
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('PROPOSTA COMERCIAL', W / 2, y + 20);
+                    ctx.textAlign = 'left';
+                    y += 30;
+
+                    // Cliente
+                    ctx.fillStyle = '#f0f7ff';
+                    ctx.fillRect(10, y + 8, W - 20, 55);
+                    ctx.strokeStyle = '#cce0ff';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(10, y + 8, W - 20, 55);
+                    
+                    ctx.fillStyle = '#1e3a5f';
+                    ctx.font = 'bold 10px Arial';
+                    ctx.fillText('CLIENTE', 20, y + 22);
+                    
+                    ctx.font = '9px Arial';
+                    ctx.fillStyle = '#666';
+                    ctx.fillText('Empresa: ' + clienteEmpresa, 20, y + 38);
+                    ctx.fillText('Contato: ' + clienteNome, 20, y + 52);
+                    ctx.fillText('Tel: ' + clienteTel, 310, y + 38);
+                    ctx.fillText('Email: ' + clienteEmail, 310, y + 52);
+                    
+                    y += 70;
+
+                    // Tabela header
+                    ctx.fillStyle = '#1e3a5f';
+                    ctx.fillRect(10, y, W - 20, 22);
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 9px Arial';
+                    ctx.fillText('Cód', 20, y + 15);
+                    ctx.fillText('Produto', 70, y + 15);
+                    ctx.fillText('Tipo', 360, y + 15);
+                    ctx.fillText('Qtd', 410, y + 15);
+                    ctx.textAlign = 'right';
+                    ctx.fillText('Unit.', 500, y + 15);
+                    ctx.fillText('Total', W - 20, y + 15);
+                    ctx.textAlign = 'left';
+                    y += 22;
+
+                    // Itens
+                    itens.forEach((item, idx) => {
+                        ctx.fillStyle = idx % 2 === 0 ? '#fff' : '#f5f5f5';
+                        ctx.fillRect(10, y, W - 20, itemH);
+                        
+                        ctx.fillStyle = '#333';
+                        ctx.font = '9px Arial';
+                        
+                        let cod = item.codigo.length > 10 ? item.codigo.substring(0, 10) : item.codigo;
+                        ctx.fillText(cod, 20, y + 17);
+                        
+                        let nome = item.nome.length > 38 ? item.nome.substring(0, 35) + '...' : item.nome;
+                        ctx.fillText(nome, 70, y + 17);
+                        
+                        ctx.fillText(item.tipo, 360, y + 17);
+                        ctx.fillText(item.quantidade.toString(), 410, y + 17);
+                        
+                        ctx.textAlign = 'right';
+                        ctx.fillText(formatarMoeda(item.precoUnit), 500, y + 17);
+                        ctx.fillText(formatarMoeda(item.quantidade * item.precoUnit), W - 20, y + 17);
+                        ctx.textAlign = 'left';
+                        
+                        y += itemH;
+                    });
+
+                    // Total
+                    ctx.fillStyle = '#1e3a5f';
+                    ctx.fillRect(10, y, W - 20, 26);
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 11px Arial';
+                    ctx.textAlign = 'right';
+                    ctx.fillText('TOTAL:', 500, y + 18);
+                    ctx.fillText(formatarMoeda(calcularTotal()), W - 20, y + 18);
+                    ctx.textAlign = 'left';
+                    y += 35;
+
+                    // Condições
+                    ctx.fillStyle = '#fffbeb';
+                    ctx.fillRect(10, y, W - 20, 48);
+                    ctx.strokeStyle = '#fcd34d';
+                    ctx.strokeRect(10, y, W - 20, 48);
+                    
+                    ctx.fillStyle = '#92400e';
+                    ctx.font = 'bold 10px Arial';
+                    ctx.fillText('CONDIÇÕES', 20, y + 15);
+                    
+                    ctx.font = '9px Arial';
+                    ctx.fillStyle = '#333';
+                    ctx.fillText('Pagamento: ' + condicao, 20, y + 30);
+                    ctx.fillText('Validade: ' + validade + ' dias', 20, y + 43);
+                    ctx.fillText('Frete: A combinar', 310, y + 30);
+                    ctx.fillText('Comodato: Dispenser grátis*', 310, y + 43);
+                    y += 58;
+
+                    if (obs) {
+                        ctx.fillStyle = '#f5f5f5';
+                        ctx.fillRect(10, y, W - 20, 28);
+                        ctx.fillStyle = '#333';
+                        ctx.font = 'bold 9px Arial';
+                        ctx.fillText('OBS:', 20, y + 12);
+                        ctx.font = '9px Arial';
+                        ctx.fillStyle = '#666';
+                        ctx.fillText(obs.substring(0, 80), 50, y + 12);
+                        y += 35;
+                    }
+
+                    // Footer
+                    ctx.fillStyle = '#1e3a5f';
+                    ctx.fillRect(0, y, W, 45);
+                    ctx.fillStyle = '#fff';
+                    ctx.textAlign = 'center';
+                    ctx.font = 'bold 10px Arial';
+                    ctx.fillText('Vendedor: ' + vendedorNome + ' | Tel: ' + vendedorTel, W / 2, y + 15);
+                    ctx.font = '9px Arial';
+                    ctx.fillText('Grupo Jori Papel - Distribuidor Oficial Santher RJ', W / 2, y + 28);
+                    ctx.font = '7px Arial';
+                    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+                    ctx.fillText('*Comodato sujeito a análise. Preços sujeitos a alteração.', W / 2, y + 40);
+
+                    imagemDataUrl = canvas.toDataURL('image/png');
+                    
+                    document.getElementById('imagemGerada').src = imagemDataUrl;
+                    document.getElementById('loading').classList.remove('show');
+                    document.getElementById('modalImagem').classList.add('show');
+
+                } catch (err) {
+                    console.error(err);
+                    document.getElementById('loading').classList.remove('show');
+                    alert('Erro: ' + err.message);
+                }
+            }, 100);
+        }
+
+        async function compartilharImagem() {
+            const clienteNome = document.getElementById('clienteNome').value || 'Cliente';
+            const vendedorNome = document.getElementById('vendedorNome').value || 'Jori Papel';
+            
+            try {
+                const response = await fetch(imagemDataUrl);
+                const blob = await response.blob();
+                const arquivo = new File([blob], 'Orcamento_JoriPapel.png', { type: 'image/png' });
+                
+                const texto = 'Proposta Comercial - Jori Papel\n\nOlá ' + clienteNome + '!\n\nTotal: ' + formatarMoeda(calcularTotal()) + '\n\nAtt, ' + vendedorNome;
+                
+                if (navigator.canShare && navigator.canShare({ files: [arquivo] })) {
+                    await navigator.share({
+                        title: 'Orçamento Jori Papel',
+                        text: texto,
+                        files: [arquivo]
+                    });
+                } else {
+                    alert('Compartilhamento não suportado neste navegador. Use o botão Salvar.');
+                    salvarImagem();
+                }
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.error(err);
+                    salvarImagem();
+                }
+            }
+        }
+
+        function salvarImagem() {
+            const link = document.createElement('a');
+            link.download = 'Orcamento_JoriPapel_' + Date.now() + '.png';
+            link.href = imagemDataUrl;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function fecharModal() {
+            document.getElementById('modalImagem').classList.remove('show');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => { 
+            renderizarCatalogo(); 
+            carregarImagensSalvas();
+        });
+    </script>
+</body>
+</html>
