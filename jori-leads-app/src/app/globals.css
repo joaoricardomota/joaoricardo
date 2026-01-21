@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Space Grotesk', system-ui;
+  --font-body: 'DM Sans', system-ui;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --color-bg: #0a0f1a;
+  --color-bg-elevated: #111827;
+  --color-bg-card: #1a2234;
+  --color-border: #2d3748;
+  --color-border-light: #374151;
+  --color-text: #f3f4f6;
+  --color-text-muted: #9ca3af;
+  --color-accent: #22c55e;
+  --color-accent-hover: #16a34a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(34, 197, 94, 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(0, 59, 113, 0.1), transparent),
+    var(--color-bg);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-light);
+}
+
+/* Utility classes */
+@layer components {
+  .glass-card {
+    @apply bg-gray-900/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl;
+  }
+  
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 hover:bg-gray-800/70 hover:border-gray-600/50;
+  }
+  
+  .btn-primary {
+    @apply px-4 py-2 bg-jori-600 hover:bg-jori-500 text-white font-medium rounded-xl transition-all duration-200 active:scale-95;
+  }
+  
+  .btn-secondary {
+    @apply px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-xl border border-gray-700 transition-all duration-200 active:scale-95;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 bg-gray-900/80 border border-gray-700 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:border-jori-500 focus:ring-2 focus:ring-jori-500/20 transition-all;
+  }
+  
+  .stat-card {
+    @apply p-6 glass-card flex flex-col gap-2;
+  }
+  
+  .badge {
+    @apply px-2.5 py-1 text-xs font-medium rounded-full;
+  }
+  
+  .badge-prospect { @apply bg-blue-500/20 text-blue-400 border border-blue-500/30; }
+  .badge-contact { @apply bg-purple-500/20 text-purple-400 border border-purple-500/30; }
+  .badge-qualified { @apply bg-amber-500/20 text-amber-400 border border-amber-500/30; }
+  .badge-proposal { @apply bg-orange-500/20 text-orange-400 border border-orange-500/30; }
+  .badge-negotiation { @apply bg-pink-500/20 text-pink-400 border border-pink-500/30; }
+  .badge-won { @apply bg-jori-500/20 text-jori-400 border border-jori-500/30; }
+  .badge-lost { @apply bg-red-500/20 text-red-400 border border-red-500/30; }
+  
+  .table-row {
+    @apply border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors;
+  }
+  
+  .shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+}
+
+/* Focus visible styles */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background: rgba(34, 197, 94, 0.3);
+}
