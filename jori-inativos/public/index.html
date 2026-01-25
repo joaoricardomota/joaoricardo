@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jori Papel - Reativação de Clientes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        :root {
+            --rosa-primario: #E91E63;
+            --rosa-claro: #FCE4EC;
+            --rosa-medio: #F8BBD9;
+            --rosa-escuro: #AD1457;
+            --dourado: #D4AF37;
+            --dourado-claro: #F5E6B8;
+            --branco: #FFFBFC;
+            --cinza-suave: #F5F0F1;
+            --texto: #4A3B3F;
+            --texto-claro: #8B7B7F;
+            --sucesso: #4CAF50;
+            --alerta: #FF9800;
+            --gradiente-rosa: linear-gradient(135deg, #FCE4EC 0%, #F8BBD9 50%, #F48FB1 100%);
+            --gradiente-dourado: linear-gradient(135deg, #F5E6B8 0%, #D4AF37 100%);
+            --sombra-suave: 0 4px 20px rgba(233, 30, 99, 0.1);
+            --sombra-hover: 0 8px 30px rgba(233, 30, 99, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--gradiente-rosa);
+            min-height: 100vh;
+            color: var(--texto);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(233, 30, 99, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(248, 187, 217, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, var(--branco) 0%, var(--rosa-claro) 100%);
+            border-radius: 24px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--sombra-suave);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid var(--rosa-medio);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: var(--gradiente-dourado);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--branco);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .titulo-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--rosa-escuro);
+            margin-bottom: 4px;
+        }
+
+        .titulo-header p {
+            color: var(--texto-claro);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .stats-header {
+            display: flex;
+            gap: 25px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 15px 25px;
+            background: var(--branco);
+            border-radius: 16px;
+            border: 2px solid var(--rosa-medio);
+            min-width: 100px;
+        }
+
+        .stat-box .numero {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--rosa-primario);
+        }
+
+        .stat-box .label {
+            font-size: 11px;
+            color: var(--texto-claro);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* FRASE MOTIVACIONAL */
+        .motivacional {
+            background: linear-gradient(135deg, var(--dourado) 0%, #C9A227 100%);
+            border-radius: 20px;
+            padding: 25px 35px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .motivacional::before,
+        .motivacional::after {
+            content: '✨';
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.6;
+        }
+
+        .motivacional::before {
+            top: 15px;
+            left: 25px;
+        }
+
+        .motivacional::after {
+            bottom: 15px;
+            right: 25px;
+        }
+
+        .motivacional p {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: var(--branco);
+            font-style: italic;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* ÁREA DE UPLOAD */
+        .upload-section {
+            background: var(--branco);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--sombra-suave);
+            border: 2px dashed var(--rosa-medio);
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-section:hover {
+            border-color: var(--rosa-primario);
+            box-shadow: var(--sombra-hover);
+            transform: translateY(-2px);
+        }
+
+        .upload-section.drag-over {
+            background: var(--rosa-claro);
+            border-color: var(--rosa-primario);
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradiente-rosa);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 36px;
+        }
+
+        .upload-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--rosa-escuro);
+            margin-bottom: 10px;
+        }
+
+        .upload-section p {
+            color: var(--texto-claro);
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primario {
+            background: var(--gradiente-dourado);
+            color: var(--branco);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-primario:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .btn-rosa {
+            background: linear-gradient(135deg, var(--rosa-primario) 0%, var(--rosa-escuro) 100%);
+            color: var(--branco);
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+        }
+
+        .btn-rosa:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+        }
+
+        .btn-secundario {
+            background: var(--branco);
+            color: var(--rosa-primario);
+            border: 2px solid var(--rosa-medio);
+        }
+
+        .btn-secundario:hover {
+            background: var(--rosa-claro);
+            border-color: var(--rosa-primario);
+        }
+
+        .btn-limpar {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-limpar:hover {
+            background: #ee5a5a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        /* BARRA DE AÇÕES */
+        .acoes-bar {
+            background: var(--branco);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--sombra-suave);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .busca-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .busca-container input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid var(--rosa-medio);
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .busca-container input:focus {
+            border-color: var(--rosa-primario);
+            box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.1);
+        }
+
+        .filtros {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filtro-select {
+            padding: 10px 20px;
+            border: 2px solid var(--rosa-medio);
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            background: var(--branco);
+            color: var(--texto);
+        }
+
+        .filtro-select:focus {
+            border-color: var(--rosa-primario);
+        }
+
+        /* ROLETA DA SORTE */
+        .roleta-section {
+            background: linear-gradient(135deg, var(--rosa-primario) 0%, var(--rosa-escuro) 100%);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--branco);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .roleta-section::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .roleta-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .roleta-section p {
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .btn-roleta {
+            background: var(--gradiente-dourado);
+            color: var(--texto);
+            font-size: 18px;
+            padding: 16px 40px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .btn-roleta:hover {
+            animation: none;
+            transform: scale(1.08);
+        }
+
+        .resultado-roleta {
+            margin-top: 25px;
+            padding: 25px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 16px;
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .resultado-roleta.ativo {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .resultado-roleta h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .resultado-roleta .info-cliente {
+            text-align: left;
+            background: rgba(255,255,255,0.1);
+            padding: 15px 20px;
+            border-radius: 12px;
+        }
+
+        .resultado-roleta .info-cliente p {
+            margin: 8px 0;
+            opacity: 1;
+        }
+
+        .resultado-roleta .info-cliente strong {
+            color: var(--dourado-claro);
+        }
+
+        /* LISTA DE CLIENTES */
+        .clientes-section {
+            background: var(--branco);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: var(--sombra-suave);
+        }
+
+        .clientes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--rosa-claro);
+        }
+
+        .clientes-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: var(--rosa-escuro);
+        }
+
+        .clientes-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .cliente-card {
+            background: linear-gradient(135deg, var(--branco) 0%, var(--cinza-suave) 100%);
+            border: 2px solid var(--rosa-claro);
+            border-radius: 16px;
+            padding: 20px 25px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .cliente-card:hover {
+            border-color: var(--rosa-primario);
+            box-shadow: var(--sombra-hover);
+            transform: translateX(5px);
+        }
+
+        .cliente-card.ligado {
+            border-left: 5px solid var(--sucesso);
+        }
+
+        .cliente-card.convertido {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            border-color: var(--sucesso);
+        }
+
+        .cliente-info h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: var(--texto);
+            margin-bottom: 8px;
+        }
+
+        .cliente-info .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 13px;
+            color: var(--texto-claro);
+        }
+
+        .cliente-info .meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .cliente-acoes {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-icone {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ligar {
+            background: var(--sucesso);
+            color: var(--branco);
+        }
+
+        .btn-ligar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-editar {
+            background: var(--rosa-primario);
+            color: var(--branco);
+        }
+
+        .btn-editar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(74, 59, 63, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.ativo {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal {
+            background: var(--branco);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            background: var(--gradiente-rosa);
+            padding: 25px 30px;
+            border-radius: 24px 24px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--rosa-escuro);
+        }
+
+        .btn-fechar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--branco);
+            color: var(--rosa-primario);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-fechar:hover {
+            background: var(--rosa-primario);
+            color: var(--branco);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .script-venda {
+            background: linear-gradient(135deg, var(--dourado-claro) 0%, #FFF8E1 100%);
+            border: 2px solid var(--dourado);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .script-venda h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            color: var(--dourado);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .script-venda p {
+            font-size: 14px;
+            color: var(--texto);
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--texto);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--rosa-medio);
+            border-radius: 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--rosa-primario);
+            box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: var(--rosa-claro);
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            accent-color: var(--rosa-primario);
+        }
+
+        .info-display {
+            background: var(--cinza-suave);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-display .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--rosa-claro);
+        }
+
+        .info-display .item:last-child {
+            border-bottom: none;
+        }
+
+        .info-display .item label {
+            font-weight: 600;
+            color: var(--texto-claro);
+        }
+
+        .info-display .item span {
+            color: var(--texto);
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 2px solid var(--rosa-claro);
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        /* ESTADOS VAZIOS */
+        .estado-vazio {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .estado-vazio .icone {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .estado-vazio h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--texto-claro);
+            margin-bottom: 10px;
+        }
+
+        .estado-vazio p {
+            color: var(--texto-claro);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .stats-header {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .acoes-bar {
+                flex-direction: column;
+            }
+
+            .busca-container {
+                max-width: 100%;
+            }
+
+            .filtros {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .cliente-card {
+                grid-template-columns: 1fr;
+            }
+
+            .cliente-acoes {
+                justify-content: flex-end;
+            }
+        }
+
+        /* LOADING */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--rosa-claro);
+            border-radius: 50%;
+            border-top-color: var(--rosa-primario);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--texto);
+            color: var(--branco);
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.ativo {
+            display: block;
+        }
+
+        .toast.sucesso {
+            background: var(--sucesso);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Decoração */
+        .decoracao {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .decoracao-1 {
+            top: 10%;
+            left: 5%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .decoracao-2 {
+            bottom: 20%;
+            right: 5%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(233, 30, 99, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        #file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="decoracao decoracao-1"></div>
+    <div class="decoracao decoracao-2"></div>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="logo-section">
+                <div class="logo">JP</div>
+                <div class="titulo-header">
+                    <h1>Jori Papel</h1>
+                    <p>Sistema de Reativação de Clientes</p>
+                </div>
+            </div>
+            <div class="stats-header">
+                <div class="stat-box">
+                    <div class="numero" id="total-clientes">0</div>
+                    <div class="label">Clientes</div>
+                </div>
+                <div class="stat-box">
+                    <div class="numero" id="total-ligados">0</div>
+                    <div class="label">Ligados</div>
+                </div>
+                <div class="stat-box">
+                    <div class="numero" id="total-convertidos">0</div>
+                    <div class="label">Convertidos</div>
+                </div>
+                <button class="btn btn-limpar" onclick="limparTudo()" title="Limpar tudo e importar novo relatório">
+                    🗑️ Limpar
+                </button>
+            </div>
+        </header>
+
+        <!-- FRASE MOTIVACIONAL -->
+        <div class="motivacional">
+            <p id="frase-motivacional">"Cada ligação é uma oportunidade de reconquistar um cliente e fazer a diferença!"</p>
+        </div>
+
+        <!-- UPLOAD -->
+        <div class="upload-section" id="upload-area">
+            <div class="upload-icon">📄</div>
+            <h3>Importar Lista de Clientes</h3>
+            <p>Arraste o arquivo PDF aqui ou clique para selecionar</p>
+            <button class="btn btn-primario" onclick="document.getElementById('file-input').click()">
+                <span>📁</span> Selecionar Arquivo PDF
+            </button>
+            <input type="file" id="file-input" accept=".pdf" onchange="processarPDF(event)">
+        </div>
+
+        <!-- ROLETA DA SORTE -->
+        <div class="roleta-section" id="roleta-section" style="display: none;">
+            <h3>🎰 Estou com Sorte! 🍀</h3>
+            <p>Deixe o destino escolher seu próximo cliente para ligar!</p>
+            <button class="btn btn-roleta" onclick="girarRoleta()">
+                🎲 Sortear Cliente
+            </button>
+            <div class="resultado-roleta" id="resultado-roleta">
+                <h4>🎉 Cliente Sorteado!</h4>
+                <div class="info-cliente" id="cliente-sorteado"></div>
+                <button class="btn btn-secundario" style="margin-top: 15px;" onclick="abrirModalCliente(clienteSorteadoAtual)">
+                    📞 Ligar Agora
+                </button>
+            </div>
+        </div>
+
+        <!-- BARRA DE AÇÕES -->
+        <div class="acoes-bar" id="acoes-bar" style="display: none;">
+            <div class="busca-container">
+                <input type="text" id="busca-input" placeholder="🔍 Buscar cliente por nome, telefone ou cidade..." oninput="filtrarClientes()">
+            </div>
+            <div class="filtros">
+                <select class="filtro-select" id="filtro-status" onchange="filtrarClientes()">
+                    <option value="todos">Todos os Status</option>
+                    <option value="pendente">Pendentes</option>
+                    <option value="ligado">Já Ligados</option>
+                    <option value="convertido">Convertidos</option>
+                </select>
+                <select class="filtro-select" id="filtro-cidade" onchange="filtrarClientes()">
+                    <option value="todas">Todas as Cidades</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- LISTA DE CLIENTES -->
+        <div class="clientes-section" id="clientes-section" style="display: none;">
+            <div class="clientes-header">
+                <h2>📋 Clientes Inativos</h2>
+                <button class="btn btn-secundario" onclick="exportarDados()">
+                    📊 Exportar Relatório
+                </button>
+            </div>
+            <div class="clientes-grid" id="clientes-grid">
+                <!-- Clientes serão inseridos aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CLIENTE -->
+    <div class="modal-overlay" id="modal-cliente">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>📞 Atendimento ao Cliente</h3>
+                <button class="btn-fechar" onclick="fecharModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <!-- Script de Venda -->
+                <div class="script-venda">
+                    <h4>💡 Script de Reativação</h4>
+                    <p id="script-texto"></p>
+                </div>
+
+                <!-- Info do Cliente -->
+                <div class="info-display" id="info-cliente-modal">
+                    <!-- Dados preenchidos via JS -->
+                </div>
+
+                <!-- Formulário -->
+                <div class="form-group">
+                    <label class="checkbox-group">
+                        <input type="checkbox" id="check-ligou">
+                        <span>✅ Consegui falar com o cliente</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>Observações da Ligação</label>
+                    <textarea id="observacao" placeholder="Como foi a conversa? O que o cliente disse?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-group">
+                        <input type="checkbox" id="check-convertido">
+                        <span>🎉 Cliente reativado! Virou cliente novamente!</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>Motivo (se não converteu)</label>
+                    <select id="motivo-nao-converteu">
+                        <option value="">Selecione um motivo...</option>
+                        <option value="preco">💰 Preço - Achou caro</option>
+                        <option value="nao-consegui">📵 Não consegui falar</option>
+                        <option value="contrato">📝 Já tem contrato com outro fornecedor</option>
+                        <option value="satisfeito">😊 Satisfeito com o atual fornecedor</option>
+                        <option value="sem-demanda">📉 Sem demanda no momento</option>
+                        <option value="fechou">🚫 Empresa fechou/mudou</option>
+                        <option value="outro">❓ Outro motivo</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="outro-motivo-grupo" style="display: none;">
+                    <label>Especifique o motivo</label>
+                    <input type="text" id="outro-motivo" placeholder="Descreva o motivo...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secundario" onclick="fecharModal()">Cancelar</button>
+                <button class="btn btn-rosa" onclick="salvarAtendimento()">💾 Salvar Atendimento</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Configurar PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // Estado da aplicação
+        let clientes = [];
+        let clienteAtual = null;
+        let clienteSorteadoAtual = null;
+
+        // Frases motivacionais
+        const frases = [
+            "Cada ligação é uma oportunidade de reconquistar um cliente e fazer a diferença!",
+            "O sucesso está a uma ligação de distância. Você consegue! 💪",
+            "Transforme cada 'não' em motivação para o próximo 'sim'!",
+            "Sua energia positiva é contagiante. O cliente vai sentir isso!",
+            "Você não está apenas vendendo, está criando relacionamentos! 🌟",
+            "Acredite: esse cliente estava esperando sua ligação!",
+            "Persistência é a chave. A próxima ligação pode mudar tudo!",
+            "Sorria ao telefone - o cliente consegue ouvir seu sorriso! 😊",
+            "Cada cliente reativado é uma vitória. Vamos conquistar mais uma!",
+            "Você é capaz de grandes coisas. Mostre isso hoje!",
+            "O segredo do sucesso é começar. Vamos lá! 🚀",
+            "Sua dedicação faz a diferença. Continue brilhando! ✨",
+            "Lembre-se: você é a voz da Jori Papel. Represente com orgulho!",
+            "Transforme desafios em oportunidades. Você tem esse poder!",
+            "A rejeição é apenas redirecionamento. O cliente certo está chegando!"
+        ];
+
+        // Scripts de venda
+        const scripts = [
+            `Olá, [NOME]! Aqui é da Jori Papel. Notei que faz um tempinho que não nos falamos e queria saber como vocês estão! Temos novidades incríveis em produtos de higiene e limpeza, além de condições especiais para clientes que estão voltando. Posso contar mais?`,
+            
+            `Bom dia! Sou da Jori Papel e liguei porque sentimos sua falta! 💕 Você sabia que temos o sistema de comodato? Você recebe o dispenser gratuitamente e só paga os refis. É economia garantida! Posso explicar melhor?`,
+            
+            `Oi! Aqui é da Jori Papel. Estou ligando porque você é um cliente especial pra gente e queremos reconquistar sua confiança. Temos produtos Santher de qualidade premium e condições que vão te surpreender. Que tal conversarmos?`,
+            
+            `Olá! Da Jori Papel falando. Vi aqui que faz um tempo desde nossa última parceria e queria muito entender como podemos te ajudar novamente. Temos promoções exclusivas para reativação de cadastro! Podemos conversar?`,
+            
+            `Oi, tudo bem? Aqui é da Jori Papel! Estamos com uma campanha especial para clientes que queremos muito de volta. Produtos de higiene profissional com preços diferenciados e entrega rápida no Rio. Posso te contar mais?`,
+            
+            `Bom dia! Sou da Jori Papel, distribuidora oficial Santher. Estou ligando porque temos novidades que podem te interessar: toalhas interfolhadas, papel higiênico institucional, sabonetes... tudo com condições especiais pra você voltar a ser nosso cliente!`
+        ];
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            trocarFraseMotivacional();
+            setInterval(trocarFraseMotivacional, 30000);
+            
+            // Carregar dados salvos
+            const dadosSalvos = localStorage.getItem('jori-clientes');
+            if (dadosSalvos) {
+                clientes = JSON.parse(dadosSalvos);
+                if (clientes.length > 0) {
+                    mostrarInterface();
+                    renderizarClientes();
+                }
+            }
+
+            // Drag and drop
+            const uploadArea = document.getElementById('upload-area');
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('drag-over');
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('drag-over');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+                const file = e.dataTransfer.files[0];
+                if (file && file.type === 'application/pdf') {
+                    processarArquivoPDF(file);
+                } else {
+                    mostrarToast('Por favor, selecione um arquivo PDF válido.');
+                }
+            });
+
+            // Mostrar campo de outro motivo
+            document.getElementById('motivo-nao-converteu').addEventListener('change', (e) => {
+                const outroGrupo = document.getElementById('outro-motivo-grupo');
+                outroGrupo.style.display = e.target.value === 'outro' ? 'block' : 'none';
+            });
+        });
+
+        function trocarFraseMotivacional() {
+            const frase = frases[Math.floor(Math.random() * frases.length)];
+            document.getElementById('frase-motivacional').textContent = `"${frase}"`;
+        }
+
+        function processarPDF(event) {
+            const file = event.target.files[0];
+            if (file) {
+                processarArquivoPDF(file);
+            }
+        }
+
+        async function processarArquivoPDF(file) {
+            try {
+                mostrarToast('Processando PDF... ⏳');
+                
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+                
+                let textoCompleto = '';
+                
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    textoCompleto += pageText + '\n';
+                }
+                
+                // Extrair clientes do texto
+                const clientesExtraidos = extrairClientes(textoCompleto);
+                
+                if (clientesExtraidos.length > 0) {
+                    clientes = clientesExtraidos;
+                    salvarDados();
+                    mostrarInterface();
+                    renderizarClientes();
+                    mostrarToast(`✅ ${clientes.length} clientes importados com sucesso!`, 'sucesso');
+                } else {
+                    mostrarToast('Não foi possível extrair clientes do PDF. Verifique o formato.');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao processar PDF:', error);
+                mostrarToast('Erro ao processar o PDF. Tente novamente.');
+            }
+        }
+
+        function extrairClientes(texto) {
+            const clientesExtraidos = [];
+            
+            // Limpar texto - juntar tudo em uma linha só
+            const textoLimpo = texto
+                .replace(/\r\n/g, ' ')
+                .replace(/\n/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            
+            // Encontrar todos os códigos de 5 dígitos (que são códigos de cliente)
+            // Código aparece no início ou após espaço, seguido de espaço
+            const regexCodigos = /(?:^|\s)(\d{5})\s/g;
+            const matches = [...textoLimpo.matchAll(regexCodigos)];
+            
+            // Mapear posições dos códigos
+            const posicoesCodigos = matches.map(m => ({
+                codigo: m[1],
+                index: m.index + (m[0].startsWith(' ') ? 1 : 0)
+            }));
+            
+            console.log(`Encontrados ${posicoesCodigos.length} códigos de clientes`);
+            
+            // Para cada código, extrair o segmento até o próximo código
+            for (let i = 0; i < posicoesCodigos.length; i++) {
+                const inicio = posicoesCodigos[i].index;
+                const fim = i < posicoesCodigos.length - 1 
+                    ? posicoesCodigos[i + 1].index 
+                    : textoLimpo.length;
+                
+                const segmento = textoLimpo.substring(inicio, fim).trim();
+                const codigo = posicoesCodigos[i].codigo;
+                
+                // Pular se for um código que aparece em contexto errado (datas, etc)
+                if (segmento.length < 20) continue;
+                
+                // Extrair data de última compra (formato DD/MM/YYYY)
+                const datasEncontradas = segmento.match(/(\d{2}\/\d{2}\/\d{4})/g) || [];
+                // A última data no segmento é a data de última compra
+                const ultimaCompra = datasEncontradas.length > 0 
+                    ? datasEncontradas[datasEncontradas.length - 1] 
+                    : '';
+                
+                // Extrair UF (RJ ou SP antes da data)
+                const matchUF = segmento.match(/\s(RJ|SP)\s+\d{2}\/\d{2}\/\d{4}/i);
+                const uf = matchUF ? matchUF[1].toUpperCase() : 'RJ';
+                
+                // Extrair cidade (palavra(s) antes do UF)
+                let cidade = 'Rio de Janeiro';
+                const matchCidade = segmento.match(/([A-Za-zÀ-ú][A-Za-zÀ-ú\s]{2,30})\s+(RJ|SP)\s+\d{2}\/\d{2}\/\d{4}/i);
+                if (matchCidade) {
+                    cidade = matchCidade[1].trim();
+                    // Limpar cidade de caracteres estranhos
+                    cidade = cidade.replace(/^\d+\s*/, '').replace(/\s*\d+$/, '').trim();
+                }
+                
+                // Extrair telefone - padrões comuns
+                const regexTelefones = [
+                    /\((\d{2})\)\s*(\d{4,5})[\s\-]?(\d{4})/,  // (21) 2259-4274
+                    /(\d{2})\s+(\d{4,5})[\s\-]?(\d{4})/,       // 21 2259-4274
+                    /(\d{2})(\d{4,5})(\d{4})/,                  // 2122594274
+                ];
+                
+                let telefone = '';
+                for (const regex of regexTelefones) {
+                    const matchTel = segmento.match(regex);
+                    if (matchTel) {
+                        telefone = matchTel[0].replace(/\s+/g, '');
+                        break;
+                    }
+                }
+                
+                // Extrair endereço
+                const matchEndereco = segmento.match(/(Rua|Avenida|Av\.|Av |R\.|R |Estrada|Praia|Parque|PC |EST |AV )[^,]*?,?\s*\d*\.?/i);
+                const endereco = matchEndereco ? matchEndereco[0].trim() : '';
+                
+                // Extrair nome - está entre o código e o telefone/endereço
+                // Primeiro, remover o código do início
+                let textoParaNome = segmento.substring(5).trim();
+                
+                // Pode ter um CPF/CNPJ logo após (ex: 32.309.862)
+                textoParaNome = textoParaNome.replace(/^[\d\.\-\/]+\s*/, '');
+                
+                // Encontrar onde o nome termina (antes do telefone ou endereço)
+                let fimNome = textoParaNome.length;
+                
+                // Procurar padrões que indicam fim do nome
+                const padroesFimNome = [
+                    /\(\d{2}\)/,                    // (21)
+                    /\d{2}\s+\d{4}/,                // 21 2259
+                    /\d{8,}/,                       // número longo
+                    /Rua\s/i,
+                    /Avenida\s/i,
+                    /Av\.\s/i,
+                    /Av\s/i,
+                    /R\.\s/,
+                    /Estrada\s/i,
+                    /Praia\s/i,
+                    /Parque\s/i,
+                    /PC\s/i,
+                    /EST\s/i,
+                    /AV\s/i,
+                ];
+                
+                for (const padrao of padroesFimNome) {
+                    const match = textoParaNome.search(padrao);
+                    if (match > 0 && match < fimNome) {
+                        fimNome = match;
+                    }
+                }
+                
+                let nome = textoParaNome.substring(0, fimNome).trim();
+                
+                // Limpar caracteres estranhos do nome
+                nome = nome
+                    .replace(/\s+/g, ' ')
+                    .replace(/[,\.]+$/, '')
+                    .trim();
+                
+                // Validar que temos um nome válido
+                if (nome.length < 3 || /^\d+$/.test(nome)) continue;
+                
+                // Criar objeto do cliente
+                const cliente = {
+                    id: codigo,
+                    codigo: codigo,
+                    nome: nome.substring(0, 100),
+                    telefone: telefone,
+                    endereco: endereco,
+                    cidade: cidade,
+                    uf: uf,
+                    ultimaCompra: ultimaCompra,
+                    ligou: false,
+                    convertido: false,
+                    observacao: '',
+                    motivo: '',
+                    dataAtendimento: null
+                };
+                
+                clientesExtraidos.push(cliente);
+                console.log(`Cliente extraído: ${codigo} - ${nome} - Tel: ${telefone}`);
+            }
+            
+            // Remover duplicatas por código
+            const clientesUnicos = [];
+            const codigosVistos = new Set();
+            
+            for (const cliente of clientesExtraidos) {
+                if (!codigosVistos.has(cliente.codigo)) {
+                    codigosVistos.add(cliente.codigo);
+                    clientesUnicos.push(cliente);
+                }
+            }
+            
+            console.log(`Total de clientes únicos: ${clientesUnicos.length}`);
+            return clientesUnicos;
+        }
+
+        function mostrarInterface() {
+            document.getElementById('upload-area').style.display = 'none';
+            document.getElementById('roleta-section').style.display = 'block';
+            document.getElementById('acoes-bar').style.display = 'flex';
+            document.getElementById('clientes-section').style.display = 'block';
+            
+            // Popular filtro de cidades
+            const cidades = [...new Set(clientes.map(c => c.cidade))].sort();
+            const selectCidade = document.getElementById('filtro-cidade');
+            selectCidade.innerHTML = '<option value="todas">Todas as Cidades</option>';
+            cidades.forEach(cidade => {
+                selectCidade.innerHTML += `<option value="${cidade}">${cidade}</option>`;
+            });
+            
+            atualizarEstatisticas();
+        }
+
+        function renderizarClientes() {
+            const grid = document.getElementById('clientes-grid');
+            const clientesFiltrados = obterClientesFiltrados();
+            
+            if (clientesFiltrados.length === 0) {
+                grid.innerHTML = `
+                    <div class="estado-vazio">
+                        <div class="icone">🔍</div>
+                        <h3>Nenhum cliente encontrado</h3>
+                        <p>Tente ajustar os filtros de busca</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = clientesFiltrados.map(cliente => `
+                <div class="cliente-card ${cliente.ligou ? 'ligado' : ''} ${cliente.convertido ? 'convertido' : ''}" 
+                     onclick="abrirModalCliente('${cliente.id}')">
+                    <div class="cliente-info">
+                        <h4>${cliente.convertido ? '🎉 ' : ''}${cliente.nome}</h4>
+                        <div class="meta">
+                            <span>📞 ${cliente.telefone || 'Sem telefone'}</span>
+                            <span>📍 ${cliente.cidade}</span>
+                            <span>📅 Últ. compra: ${cliente.ultimaCompra || 'N/A'}</span>
+                            ${cliente.ligou ? '<span>✅ Ligado</span>' : '<span>⏳ Pendente</span>'}
+                        </div>
+                    </div>
+                    <div class="cliente-acoes">
+                        <button class="btn-icone btn-ligar" onclick="event.stopPropagation(); ligarCliente('${cliente.telefone}')" title="Ligar">
+                            📞
+                        </button>
+                        <button class="btn-icone btn-editar" onclick="event.stopPropagation(); abrirModalCliente('${cliente.id}')" title="Editar">
+                            ✏️
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            atualizarEstatisticas();
+        }
+
+        function obterClientesFiltrados() {
+            const busca = document.getElementById('busca-input').value.toLowerCase();
+            const status = document.getElementById('filtro-status').value;
+            const cidade = document.getElementById('filtro-cidade').value;
+            
+            return clientes.filter(cliente => {
+                // Filtro de busca
+                const matchBusca = !busca || 
+                    cliente.nome.toLowerCase().includes(busca) ||
+                    (cliente.telefone && cliente.telefone.includes(busca)) ||
+                    cliente.cidade.toLowerCase().includes(busca);
+                
+                // Filtro de status
+                let matchStatus = true;
+                if (status === 'pendente') matchStatus = !cliente.ligou;
+                else if (status === 'ligado') matchStatus = cliente.ligou && !cliente.convertido;
+                else if (status === 'convertido') matchStatus = cliente.convertido;
+                
+                // Filtro de cidade
+                const matchCidade = cidade === 'todas' || cliente.cidade === cidade;
+                
+                return matchBusca && matchStatus && matchCidade;
+            });
+        }
+
+        function filtrarClientes() {
+            renderizarClientes();
+        }
+
+        function atualizarEstatisticas() {
+            document.getElementById('total-clientes').textContent = clientes.length;
+            document.getElementById('total-ligados').textContent = clientes.filter(c => c.ligou).length;
+            document.getElementById('total-convertidos').textContent = clientes.filter(c => c.convertido).length;
+        }
+
+        function girarRoleta() {
+            const pendentes = clientes.filter(c => !c.ligou);
+            
+            if (pendentes.length === 0) {
+                mostrarToast('🎉 Parabéns! Você já ligou para todos os clientes!');
+                return;
+            }
+            
+            // Animação de suspense
+            const btn = document.querySelector('.btn-roleta');
+            btn.innerHTML = '<span class="loading"></span> Sorteando...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                const sorteado = pendentes[Math.floor(Math.random() * pendentes.length)];
+                clienteSorteadoAtual = sorteado.id;
+                
+                document.getElementById('cliente-sorteado').innerHTML = `
+                    <p><strong>Nome:</strong> ${sorteado.nome}</p>
+                    <p><strong>Telefone:</strong> ${sorteado.telefone || 'Não informado'}</p>
+                    <p><strong>Cidade:</strong> ${sorteado.cidade}</p>
+                    <p><strong>Última Compra:</strong> ${sorteado.ultimaCompra || 'N/A'}</p>
+                `;
+                
+                document.getElementById('resultado-roleta').classList.add('ativo');
+                
+                btn.innerHTML = '🎲 Sortear Outro';
+                btn.disabled = false;
+            }, 1500);
+        }
+
+        function abrirModalCliente(id) {
+            clienteAtual = clientes.find(c => c.id === id);
+            
+            if (!clienteAtual) return;
+            
+            // Preencher info
+            document.getElementById('info-cliente-modal').innerHTML = `
+                <div class="item"><label>Código</label><span>${clienteAtual.codigo}</span></div>
+                <div class="item"><label>Nome</label><span>${clienteAtual.nome}</span></div>
+                <div class="item"><label>Telefone</label><span>${clienteAtual.telefone || 'Não informado'}</span></div>
+                <div class="item"><label>Endereço</label><span>${clienteAtual.endereco || 'Não informado'}</span></div>
+                <div class="item"><label>Cidade</label><span>${clienteAtual.cidade} - ${clienteAtual.uf}</span></div>
+                <div class="item"><label>Última Compra</label><span>${clienteAtual.ultimaCompra || 'N/A'}</span></div>
+            `;
+            
+            // Script aleatório
+            const scriptAleatorio = scripts[Math.floor(Math.random() * scripts.length)];
+            document.getElementById('script-texto').textContent = scriptAleatorio.replace('[NOME]', clienteAtual.nome.split(' ')[0]);
+            
+            // Preencher dados salvos
+            document.getElementById('check-ligou').checked = clienteAtual.ligou;
+            document.getElementById('check-convertido').checked = clienteAtual.convertido;
+            document.getElementById('observacao').value = clienteAtual.observacao || '';
+            document.getElementById('motivo-nao-converteu').value = clienteAtual.motivo || '';
+            
+            document.getElementById('modal-cliente').classList.add('ativo');
+            trocarFraseMotivacional();
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-cliente').classList.remove('ativo');
+            clienteAtual = null;
+        }
+
+        function salvarAtendimento() {
+            if (!clienteAtual) return;
+            
+            clienteAtual.ligou = document.getElementById('check-ligou').checked;
+            clienteAtual.convertido = document.getElementById('check-convertido').checked;
+            clienteAtual.observacao = document.getElementById('observacao').value;
+            clienteAtual.motivo = document.getElementById('motivo-nao-converteu').value;
+            
+            if (clienteAtual.motivo === 'outro') {
+                clienteAtual.motivo = document.getElementById('outro-motivo').value || 'Outro';
+            }
+            
+            clienteAtual.dataAtendimento = new Date().toISOString();
+            
+            salvarDados();
+            renderizarClientes();
+            fecharModal();
+            
+            if (clienteAtual.convertido) {
+                mostrarToast('🎉 Parabéns! Cliente reativado com sucesso!', 'sucesso');
+            } else {
+                mostrarToast('✅ Atendimento salvo!', 'sucesso');
+            }
+        }
+
+        function ligarCliente(telefone) {
+            if (telefone) {
+                const telLimpo = telefone.replace(/\D/g, '');
+                window.open(`tel:${telLimpo}`, '_blank');
+            } else {
+                mostrarToast('Telefone não disponível');
+            }
+        }
+
+        function salvarDados() {
+            localStorage.setItem('jori-clientes', JSON.stringify(clientes));
+        }
+
+        function exportarDados() {
+            const dados = clientes.map(c => ({
+                Código: c.codigo,
+                Nome: c.nome,
+                Telefone: c.telefone,
+                Cidade: c.cidade,
+                'Última Compra': c.ultimaCompra,
+                Ligou: c.ligou ? 'Sim' : 'Não',
+                Convertido: c.convertido ? 'Sim' : 'Não',
+                Motivo: c.motivo,
+                Observação: c.observacao
+            }));
+            
+            // Criar CSV
+            const headers = Object.keys(dados[0]);
+            const csv = [
+                headers.join(';'),
+                ...dados.map(row => headers.map(h => `"${row[h] || ''}"`).join(';'))
+            ].join('\n');
+            
+            // Download
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `relatorio-reativacao-${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            
+            mostrarToast('📊 Relatório exportado!', 'sucesso');
+        }
+
+        function mostrarToast(mensagem, tipo = '') {
+            const toast = document.getElementById('toast');
+            toast.textContent = mensagem;
+            toast.className = `toast ativo ${tipo}`;
+            
+            setTimeout(() => {
+                toast.classList.remove('ativo');
+            }, 3000);
+        }
+
+        function limparTudo() {
+            if (!confirm('⚠️ Tem certeza que deseja limpar todos os dados?\n\nIsso vai apagar todos os clientes e o histórico de ligações.\n\nA página será recarregada.')) {
+                return;
+            }
+            
+            // Limpar localStorage completamente
+            localStorage.removeItem('jori-clientes');
+            localStorage.clear();
+            
+            // Forçar reload da página pra garantir estado limpo
+            window.location.reload(true);
+        }
+    </script>
+</body>
+</html>

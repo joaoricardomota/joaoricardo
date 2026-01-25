@@ -1,0 +1,12 @@
+{
+  "name": "jori-reativacao-clientes",
+  "version": "1.0.0",
+  "description": "Sistema de Reativação de Clientes - Jori Papel",
+  "scripts": {
+    "start": "serve public",
+    "build": "echo 'No build needed'"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  }
+}
